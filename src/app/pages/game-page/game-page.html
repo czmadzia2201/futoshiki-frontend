@@ -1,0 +1,116 @@
+<div class="game-layout">
+
+  <aside class="side-panel">
+
+    <h1>Futoshiki</h1>
+
+    <div class="game-options-section">
+
+      <div class="section-title">Game options</div>
+
+      <label class="select-field">
+        <span class="select-label">Board size</span>
+        <span class="select-wrapper">
+          <select name="boardSizeSelect" [(ngModel)]="selectedSize">
+            @for (boardSize of boardSizes; track boardSize) {
+              <option [ngValue]="boardSize">
+                {{ boardSize }} × {{ boardSize }}
+              </option>
+            }
+          </select>
+        </span>
+      </label>
+
+      <label class="select-field">
+        <span class="select-label">Difficulty</span>
+        <span class="select-wrapper">
+          <select name="difficultySelect" [(ngModel)]="selectedDifficulty">
+            @for (difficulty of difficultyLevels; track difficulty) {
+              <option [ngValue]="difficulty">
+                {{ difficulty }}
+              </option>
+            }
+          </select>
+        </span>
+      </label>
+
+      <label class="select-field">
+        <span class="select-label">Source</span>
+        <span class="select-wrapper">
+          <select name="strategySelect" [(ngModel)]="selectedStrategy">
+            @for (strategy of providerStrategies; track strategy) {
+              <option [ngValue]="strategy">
+                {{ strategy }}
+              </option>
+            }
+          </select>
+        </span>
+      </label>
+
+      <button type="button" (click)="newGame()">
+        New Game
+      </button>
+
+    </div>
+
+  </aside>
+
+  <main class="board-panel">
+
+    <div class="board-area">
+      @if (activeGame) {
+        <div
+          class="board-container"
+          [style.--board-size]="fullBoardSize()"
+        >
+          @for (row of drawGrid(); track $index) {
+            @for (cell of row; track $index) {
+              @switch (cell.type) {
+                @case (BoardElementType.CELL) {
+                  <div class="cell">
+                    {{ cell.value }}
+                  </div>
+                }
+                @case (BoardElementType.HORIZONTAL_CONSTRAINT) {
+                  <div class="horizontal-constraint"><span>
+                    {{ constraintSymbol(cell.operator) }}
+                  </span></div>
+                }
+                @case (BoardElementType.VERTICAL_CONSTRAINT) {
+                  <div class="vertical-constraint"><span>
+                    {{ constraintSymbol(cell.operator) }}
+                  </span></div>
+                }
+                @case (BoardElementType.EMPTY) {
+                  <div class="empty"></div>
+                }
+              }
+            }
+          }
+        </div>
+      } @else {
+      <div class="board-placeholder">
+        Select game options<br />
+        and start a new game.
+      </div>
+      }
+    </div>
+
+      <div class="edit-controls">
+        <button type="button">
+          Pencil
+        </button>
+        <button type="button">
+          Back
+        </button>
+        <button type="button">
+          Reset board
+        </button>
+        <button type="button">
+          Show solution
+        </button>
+      </div>
+
+  </main>
+
+</div>
