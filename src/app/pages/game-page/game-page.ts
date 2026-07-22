@@ -20,7 +20,8 @@ export class GamePage {
   private gameService = inject(GameService);
 
   activeGame: ActiveGame | null = null;
-  grid: number[][] | null = null;
+  currentGrid: number[][] = [];
+  selectedNumber: number | null = null;
 
   selectedSize: number = 4;
   selectedDifficulty: Difficulty = Difficulty.EASY;
@@ -35,7 +36,8 @@ export class GamePage {
   newGame(): void {
     this.gameService.newGame(this.selectedSize, this.selectedDifficulty, this.selectedStrategy).subscribe(game => {
       this.activeGame = game;
-      this.grid = game.board.grid;
+      this.currentGrid = game.board.grid.map(row => [...row]);
+      this.selectedNumber = null;
     });
   }
 
@@ -44,7 +46,7 @@ export class GamePage {
       return [];
     }
 
-    return GridResolver.resolve(this.activeGame);
+    return GridResolver.resolve(this.activeGame, this.currentGrid);
   }
 
   fullBoardSize(): number {
@@ -62,6 +64,43 @@ export class GamePage {
       case ConstraintOperator.GREATER_THAN:
         return '>';
     }
+  }
+
+  selectNumber(number: number): void {
+    this.selectedNumber =
+      this.selectedNumber === number ? null : number;
+  }
+
+  isSelectedNumber(number: number): boolean {
+    return this.selectedNumber === number;
+  }
+
+  fillCell(rowIndex: number, colIndex: number): void {
+    if (this.selectedNumber === null) {
+      return;
+    }
+
+    if (!this.isEditableCell(rowIndex, colIndex)) {
+      return;
+    }
+
+    const row = rowIndex / 2;
+    const col = colIndex / 2;
+
+    this.currentGrid[row][col] = this.selectedNumber;
+  }
+
+  isEditableCell(rowIndex: number, colIndex: number): boolean {
+    return this.activeGame?.board.grid[rowIndex/2][colIndex/2] === 0;
+  }
+
+  availableNumbers(): number[] {
+    const size = this.activeGame ? this.activeGame.board.size + 1 : 0;
+
+    return Array.from(
+      { length: size },
+      (_, index) => index
+    );
   }
 
 }

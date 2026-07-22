@@ -3,8 +3,7 @@ import { BoardElement, BoardElementType } from '../../models/board-element';
 
 export class GridResolver {
 
-    static resolve(activeGame: ActiveGame): BoardElement[][] {
-      const grid = activeGame.board.grid;
+    static resolve(activeGame: ActiveGame, currentGrid: number[][]): BoardElement[][] {
       const size = activeGame.board.size * 2 - 1;
 
       const fullBoard: BoardElement[][] = new Array(size);
@@ -14,8 +13,7 @@ export class GridResolver {
 
         for (let col = 0; col < size; col++) {
           if (this.isEven(row) && this.isEven(col)) {
-            const value = grid[row / 2][col / 2];
-
+            const value = currentGrid[row / 2][col / 2];
             fullBoard[row][col] = {
               type: BoardElementType.CELL,
               value: value === 0 ? null : value,

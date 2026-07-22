@@ -59,15 +59,31 @@
 
     <div class="board-area">
       @if (activeGame) {
-        <div
+      <div class="number-panel">
+        @for (number of availableNumbers(); track number) {
+        <button
+          type="button"
+          [class.selected]="isSelectedNumber(number)"
+          (click)="selectNumber(number)"
+        >
+          {{ number === 0 ? "×" : number }}
+        </button>
+        }
+      </div>
+
+      <div
           class="board-container"
           [style.--board-size]="fullBoardSize()"
         >
-          @for (row of drawGrid(); track $index) {
-            @for (cell of row; track $index) {
+          @for (row of drawGrid(); track $index; let rowIndex = $index) {
+            @for (cell of row; track $index; let colIndex = $index) {
               @switch (cell.type) {
                 @case (BoardElementType.CELL) {
-                  <div class="cell">
+                  <div class="cell"
+                       [class.given]="!isEditableCell(rowIndex, colIndex)"
+                       [class.user]="isEditableCell(rowIndex, colIndex)"
+                       (click)="fillCell(rowIndex, colIndex)"
+                  >
                     {{ cell.value }}
                   </div>
                 }
@@ -96,20 +112,20 @@
       }
     </div>
 
-      <div class="edit-controls">
-        <button type="button">
-          Pencil
-        </button>
-        <button type="button">
-          Back
-        </button>
-        <button type="button">
-          Reset board
-        </button>
-        <button type="button">
-          Show solution
-        </button>
-      </div>
+    <div class="edit-controls">
+      <button type="button">
+        Pencil
+      </button>
+      <button type="button">
+        Back
+      </button>
+      <button type="button">
+        Reset board
+      </button>
+      <button type="button">
+        Show solution
+      </button>
+    </div>
 
   </main>
 

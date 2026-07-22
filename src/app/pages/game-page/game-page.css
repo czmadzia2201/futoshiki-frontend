@@ -113,6 +113,10 @@ button {
   cursor: pointer;
 }
 
+button:hover {
+  background: #f0f0f0;
+}
+
 @media (max-width: 850px) {
   .game-layout {
     grid-template-columns: 1fr;
@@ -160,6 +164,8 @@ button {
 .board-area {
     flex: 1;
     display: flex;
+    flex-direction: column;
+    gap: 16px;
     justify-content: center;
     align-items: center;
     padding-top: 30px;
@@ -208,6 +214,14 @@ button {
   font-size: 20px;
 }
 
+.cell.given {
+    color: #333;
+}
+
+.cell.user {
+    color: #2e7d32;
+}
+
 .horizontal-constraint {
   width: 20px;
   height: 36px;
@@ -233,3 +247,21 @@ button {
   transform: rotate(90deg) scaleY(2.5);
 }
 
+.number-panel {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.number-panel button {
+  width: 36px;
+}
+
+.number-panel button.selected {
+  border-color: #2e7d32;
+  background: #eef8ee;
+}
+
+.number-panel button:hover {
+  background: #f6f6f6;
+}
