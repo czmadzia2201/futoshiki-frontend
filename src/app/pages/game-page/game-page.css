@@ -7,23 +7,28 @@
 
 .game-layout {
   display: grid;
-  grid-template-columns: 250px 1fr;
+  grid-template-columns: 250px minmax(0, 1fr);
   gap: 20px;
   max-width: 1300px;
-  height: 100vh;
+  min-height: 100vh;
   margin: 0 auto;
   padding: 18px;
   box-sizing: border-box;
 }
 
-.side-panel {
-  background: white;
+.side-panel,
+.game-panel {
+  background: #fff;
   border: 1px solid #ddd;
   border-radius: 14px;
-  padding: 18px;
+  box-sizing: border-box;
+}
+
+.side-panel {
   display: flex;
   flex-direction: column;
   gap: 22px;
+  padding: 18px;
 }
 
 .game-options-section {
@@ -32,13 +37,18 @@
   gap: 14px;
 }
 
-.section-title {
-  margin-bottom: 2px;
-  font-size: 12px;
+.section-title,
+.select-label,
+.game-section-title {
   font-weight: 600;
   color: #666;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+}
+
+.section-title {
+  margin-bottom: 2px;
+  font-size: 12px;
 }
 
 .select-field {
@@ -49,9 +59,7 @@
 
 .select-label {
   font-size: 11px;
-  font-weight: 600;
   color: #777;
-  text-transform: uppercase;
   letter-spacing: 0.55px;
 }
 
@@ -105,11 +113,10 @@ select:focus-visible {
 }
 
 button {
-  margin: 22px 0;
   padding: 8px 12px;
   border: 1px solid #bbb;
   border-radius: 8px;
-  background: white;
+  background: #fff;
   cursor: pointer;
 }
 
@@ -117,77 +124,128 @@ button:hover {
   background: #f0f0f0;
 }
 
-@media (max-width: 850px) {
-  .game-layout {
-    grid-template-columns: 1fr;
-    height: auto;
-  }
-
-  .board-panel {
-    min-width: 0;
-  }
+.new-game-button {
+  margin-top: 8px;
 }
 
-.board-panel {
-  flex: 1;
-  flex-direction: column;
-  min-width: 600px;
-  min-height: 600px;
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  justify-content: center;
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 14px;
-  padding: 12px;
+.game-panel {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 14px;
+  min-width: 0;
+  min-height: 0;
+  padding: 14px;
+}
+
+.game-section {
+  position: relative;
+  min-width: 0;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.game-section-title {
+  position: absolute;
+  top: 0;
+  left: 18px;
+  margin: 0;
+  padding: 0 8px;
+  background: #fff;
+  font-size: 11px;
+  line-height: 1;
+  transform: translateY(-50%);
+}
+
+.game-section-content {
+  min-width: 0;
+  height: 100%;
   box-sizing: border-box;
 }
 
-.board-placeholder {
-  box-sizing: border-box;
-  height: clamp(420px, 84%, 760px);
-  aspect-ratio: 1;
+.number-section-content,
+.edit-section-content {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px dashed #d7d7d7;
-  border-radius: 14px;
+  min-height: 76px;
+  padding: 18px 16px 14px;
+}
+
+.board-section {
+  min-height: 0;
+}
+
+.board-section-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 420px;
+  padding: 28px;
+  overflow: auto;
+}
+
+.section-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  border: 1px dashed #d7d7d7;
+  border-radius: 10px;
   background: #fcfcfc;
   color: #9a9a9a;
-  font-size: 18px;
-  font-weight: 500;
   text-align: center;
   line-height: 1.5;
 }
 
-.board-area {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    justify-content: center;
-    align-items: center;
-    padding-top: 30px;
+.compact-placeholder {
+  width: min(100%, 480px);
+  min-height: 38px;
+  padding: 8px 14px;
+  font-size: 13px;
 }
 
-.board-container {
-    display: grid;
-    width: max-content;
-    aspect-ratio: 1;
-    grid-template-columns: repeat(var(--board-size), auto);
-    grid-template-rows: repeat(var(--board-size), auto);
-    gap: 0;
+.board-placeholder {
+  width: min(100%, 480px);
+  aspect-ratio: 1;
+  min-height: 280px;
+  max-height: 480px;
+  font-size: 18px;
+  font-weight: 500;
 }
 
+.number-panel,
 .edit-controls {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 12px;
 }
 
+.number-panel button {
+  width: 34px;
+}
+
+.number-panel button.selected {
+  border-color: #2e7d32;
+  background: #eef8ee;
+}
+
+.number-panel button:hover {
+  background: #f6f6f6;
+}
+
 .edit-controls button {
-  width: 120px;
+  width: 125px;
+}
+
+.board-container {
+  display: grid;
+  width: max-content;
+  aspect-ratio: 1;
+  grid-template-columns: repeat(var(--board-size), auto);
+  grid-template-rows: repeat(var(--board-size), auto);
+  gap: 0;
 }
 
 .cell,
@@ -195,31 +253,35 @@ button:hover {
 .vertical-constraint,
 .empty {
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
 }
 
 .cell {
+  position: relative;
   width: 36px;
   height: 36px;
+  padding: 0;
+  box-sizing: border-box;
   border: 1px solid #666;
   border-radius: 7px;
-  box-sizing: border-box;
   background: #fff;
+  font-size: 20px;
   font-weight: 700;
   appearance: none;
-  padding: 0;
   cursor: pointer;
-  position: relative;
-  font-size: 20px;
 }
 
 .cell.given {
-    color: #333;
+  color: #333;
 }
 
 .cell.user {
-    color: #2e7d32;
+  color: #2e7d32;
+}
+
+.cell.invalid {
+  color: #c62828;
 }
 
 .horizontal-constraint {
@@ -247,21 +309,40 @@ button:hover {
   transform: rotate(90deg) scaleY(2.5);
 }
 
-.number-panel {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
+@media (max-width: 850px) {
+  .game-layout {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .game-panel {
+    grid-template-rows: auto auto auto;
+  }
+
+  .board-section-content {
+    min-height: 360px;
+    padding: 22px 14px;
+  }
 }
 
-.number-panel button {
-  width: 36px;
-}
+@media (max-width: 560px) {
+  .game-layout {
+    gap: 12px;
+    padding: 10px;
+  }
 
-.number-panel button.selected {
-  border-color: #2e7d32;
-  background: #eef8ee;
-}
+  .side-panel,
+  .game-panel {
+    border-radius: 12px;
+  }
 
-.number-panel button:hover {
-  background: #f6f6f6;
+  .board-section-content {
+    justify-content: flex-start;
+    min-height: 320px;
+    padding: 22px 10px;
+  }
+
+  .edit-controls button {
+    width: calc(50% - 6px);
+  }
 }

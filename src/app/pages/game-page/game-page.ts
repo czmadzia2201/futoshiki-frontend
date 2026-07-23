@@ -7,7 +7,9 @@ import { ProviderStrategy } from '../../models/provider-strategy';
 import { FutoshikiBoard } from '../../models/futoshiki-board';
 import { BoardElement, BoardElementType } from '../../models/board-element';
 import { ConstraintOperator } from '../../models/constraint-operator';
+import { Position } from '../../models/position';
 import { GridResolver } from './grid-resolver';
+import { BoardValidator } from './board-validator';
 
 @Component({
   selector: 'app-game-page',
@@ -20,8 +22,9 @@ export class GamePage {
   private gameService = inject(GameService);
 
   activeGame: ActiveGame | null = null;
-  currentGrid: number[][] = [];
+  currentGrid: number[][] = []; // Zero based!
   selectedNumber: number | null = null;
+  conflictPositions: Position[] = []; // One based!
 
   selectedSize: number = 4;
   selectedDifficulty: Difficulty = Difficulty.EASY;
@@ -38,7 +41,14 @@ export class GamePage {
       this.activeGame = game;
       this.currentGrid = game.board.grid.map(row => [...row]);
       this.selectedNumber = null;
+      this.conflictPositions = [];
     });
+  }
+
+  resetBoard(): void {
+    this.currentGrid = this.activeGame!.board.grid.map(row => [...row]);
+    this.selectedNumber = null;
+    this.conflictPositions = [];
   }
 
   drawGrid(): BoardElement[][] {
@@ -88,10 +98,17 @@ export class GamePage {
     const col = colIndex / 2;
 
     this.currentGrid[row][col] = this.selectedNumber;
+    this.conflictPositions = BoardValidator.validate(this.activeGame!, this.currentGrid);
+    console.log(JSON.stringify(this.conflictPositions));
   }
 
   isEditableCell(rowIndex: number, colIndex: number): boolean {
     return this.activeGame?.board.grid[rowIndex/2][colIndex/2] === 0;
+  }
+
+  isInvalidCell(rowIndex: number, colIndex: number): boolean {
+    return  this.isEditableCell(rowIndex, colIndex) &&
+            this.conflictPositions.some(p => p.row === rowIndex/2 + 1 && p.col === colIndex/2 + 1);
   }
 
   availableNumbers(): number[] {

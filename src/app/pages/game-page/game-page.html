@@ -47,7 +47,7 @@
         </span>
       </label>
 
-      <button type="button" (click)="newGame()">
+      <button class="new-game-button" type="button" (click)="newGame()">
         New Game
       </button>
 
@@ -55,77 +55,107 @@
 
   </aside>
 
-  <main class="board-panel">
+  <main class="game-panel">
 
-    <div class="board-area">
-      @if (activeGame) {
-      <div class="number-panel">
-        @for (number of availableNumbers(); track number) {
-        <button
-          type="button"
-          [class.selected]="isSelectedNumber(number)"
-          (click)="selectNumber(number)"
-        >
-          {{ number === 0 ? "×" : number }}
-        </button>
+    <section class="game-section number-section" aria-labelledby="numbers-title">
+      <h2 id="numbers-title" class="game-section-title">Numbers</h2>
+
+      <div class="game-section-content number-section-content">
+        @if (activeGame) {
+          <div class="number-panel">
+            @for (number of availableNumbers(); track number) {
+              <button
+                type="button"
+                [class.selected]="isSelectedNumber(number)"
+                (click)="selectNumber(number)"
+              >
+                {{ number === 0 ? "×" : number }}
+              </button>
+            }
+          </div>
+        } @else {
+          <div class="section-placeholder compact-placeholder">
+            Start a game to display available numbers.
+          </div>
         }
       </div>
+    </section>
 
-      <div
-          class="board-container"
-          [style.--board-size]="fullBoardSize()"
-        >
-          @for (row of drawGrid(); track $index; let rowIndex = $index) {
-            @for (cell of row; track $index; let colIndex = $index) {
-              @switch (cell.type) {
-                @case (BoardElementType.CELL) {
-                  <div class="cell"
-                       [class.given]="!isEditableCell(rowIndex, colIndex)"
-                       [class.user]="isEditableCell(rowIndex, colIndex)"
-                       (click)="fillCell(rowIndex, colIndex)"
-                  >
-                    {{ cell.value }}
-                  </div>
-                }
-                @case (BoardElementType.HORIZONTAL_CONSTRAINT) {
-                  <div class="horizontal-constraint"><span>
-                    {{ constraintSymbol(cell.operator) }}
-                  </span></div>
-                }
-                @case (BoardElementType.VERTICAL_CONSTRAINT) {
-                  <div class="vertical-constraint"><span>
-                    {{ constraintSymbol(cell.operator) }}
-                  </span></div>
-                }
-                @case (BoardElementType.EMPTY) {
-                  <div class="empty"></div>
+    <section class="game-section board-section" aria-labelledby="board-title">
+      <h2 id="board-title" class="game-section-title">Board</h2>
+
+      <div class="game-section-content board-section-content">
+        @if (activeGame) {
+          <div
+            class="board-container"
+            [style.--board-size]="fullBoardSize()"
+          >
+            @for (row of drawGrid(); track $index; let rowIndex = $index) {
+              @for (cell of row; track $index; let colIndex = $index) {
+                @switch (cell.type) {
+                  @case (BoardElementType.CELL) {
+                    <div
+                      class="cell"
+                      [class.given]="!isEditableCell(rowIndex, colIndex)"
+                      [class.user]="isEditableCell(rowIndex, colIndex)"
+                      [class.invalid]="isInvalidCell(rowIndex, colIndex)"
+                      (click)="fillCell(rowIndex, colIndex)"
+                    >
+                      {{ cell.value }}
+                    </div>
+                  }
+                  @case (BoardElementType.HORIZONTAL_CONSTRAINT) {
+                    <div class="horizontal-constraint">
+                      <span>{{ constraintSymbol(cell.operator) }}</span>
+                    </div>
+                  }
+                  @case (BoardElementType.VERTICAL_CONSTRAINT) {
+                    <div class="vertical-constraint">
+                      <span>{{ constraintSymbol(cell.operator) }}</span>
+                    </div>
+                  }
+                  @case (BoardElementType.EMPTY) {
+                    <div class="empty"></div>
+                  }
                 }
               }
             }
-          }
-        </div>
-      } @else {
-      <div class="board-placeholder">
-        Select game options<br />
-        and start a new game.
+          </div>
+        } @else {
+          <div class="section-placeholder board-placeholder">
+            Select game options<br />
+            and start a new game.
+          </div>
+        }
       </div>
-      }
-    </div>
+    </section>
 
-    <div class="edit-controls">
-      <button type="button">
-        Pencil
-      </button>
-      <button type="button">
-        Back
-      </button>
-      <button type="button">
-        Reset board
-      </button>
-      <button type="button">
-        Show solution
-      </button>
-    </div>
+    <section class="game-section edit-section" aria-labelledby="edit-title">
+      <h2 id="edit-title" class="game-section-title">Edit</h2>
+
+      <div class="game-section-content edit-section-content">
+        @if (activeGame) {
+          <div class="edit-controls">
+            <button type="button">
+              <i class="bi bi-pencil"></i> Pencil
+            </button>
+            <button type="button">
+              <i class="bi bi-arrow-counterclockwise"></i> Back
+            </button>
+            <button type="button" (click)="resetBoard()">
+              <i class="bi bi-trash"></i> Reset board
+            </button>
+            <button type="button">
+              <i class="bi bi-eye"></i> Show solution
+            </button>
+          </div>
+        } @else {
+          <div class="section-placeholder compact-placeholder">
+            Editing tools will appear after the game starts.
+          </div>
+        }
+      </div>
+    </section>
 
   </main>
 
