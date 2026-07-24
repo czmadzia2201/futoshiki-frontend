@@ -1,0 +1,37 @@
+<div class="dialog-backdrop" (click)="cancelled.emit()">
+  <div
+    class="dialog-window"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-label]="title"
+    (click)="$event.stopPropagation()"
+  >
+    <h1>{{ title }}</h1>
+
+    @for (paragraph of paragraphs; track $index) {
+      <p class="dialog-message">
+        {{ paragraph }}
+      </p>
+    }
+
+    <div class="dialog-actions">
+      @if (showCancelButton) {
+      <button
+        type="button"
+        class="dialog-button"
+        (click)="cancelled.emit()"
+      >
+        {{ cancelLabel }}
+      </button>
+      }
+
+      <button
+        type="button"
+        class="dialog-button confirm-button"
+        (click)="confirmed.emit()"
+      >
+        {{ confirmLabel }}
+      </button>
+    </div>
+  </div>
+</div>

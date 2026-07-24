@@ -51,6 +51,10 @@
         New Game
       </button>
 
+      <button class="about-button" type="button" (click)="openAboutDialog()">
+        <i class="bi bi-info-circle"></i> About the Game
+      </button>
+
     </div>
 
   </aside>
@@ -67,6 +71,7 @@
               <button
                 type="button"
                 [class.selected]="isSelectedNumber(number)"
+                [disabled]="isGameFinished"
                 (click)="selectNumber(number)"
               >
                 {{ number === 0 ? "×" : number }}
@@ -136,16 +141,16 @@
       <div class="game-section-content edit-section-content">
         @if (activeGame) {
           <div class="edit-controls">
-            <button type="button">
+            <button type="button" [disabled]="isGameFinished">
               <i class="bi bi-pencil"></i> Pencil
             </button>
-            <button type="button">
-              <i class="bi bi-arrow-counterclockwise"></i> Back
+            <button type="button" (click)="undoMove()" [disabled]="isGameFinished">
+              <i class="bi bi-arrow-counterclockwise"></i> Undo
             </button>
-            <button type="button" (click)="resetBoard()">
+            <button type="button" (click)="resetBoard()" [disabled]="isGameFinished">
               <i class="bi bi-trash"></i> Reset board
             </button>
-            <button type="button">
+            <button type="button" (click)="openShowSolutionDialog()" [disabled]="isGameFinished">
               <i class="bi bi-eye"></i> Show solution
             </button>
           </div>
@@ -160,3 +165,15 @@
   </main>
 
 </div>
+
+@if (dialogConfig) {
+<app-dialog
+  [title]="dialogConfig.title"
+  [paragraphs]="dialogConfig.paragraphs"
+  [confirmLabel]="dialogConfig.confirmLabel"
+  [cancelLabel]="dialogConfig.cancelLabel ?? 'Cancel'"
+  [showCancelButton]="dialogConfig.showCancelButton"
+  (confirmed)="handleDialogConfirmation()"
+  (cancelled)="closeDialog()"
+/>
+}

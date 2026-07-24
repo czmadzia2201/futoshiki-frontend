@@ -5,8 +5,8 @@ import { Observable } from 'rxjs';
 import { ActiveGame } from '../models/active-game';
 import { Difficulty } from '../models/difficulty';
 import { ProviderStrategy } from '../models/provider-strategy';
-import { CheckSolutionRequest } from '../models/check-solution-request';
-import { CheckSolutionResponse } from '../models/check-solution-response';
+import { Solution } from '../models/solution';
+import { SolutionValidation } from '../models/solution-validation';
 
 @Injectable({
   providedIn: 'root'
@@ -31,10 +31,17 @@ export class GameService {
     );
   }
 
-  checkSolution(id: string, solution: CheckSolutionRequest): Observable<CheckSolutionResponse> {
-    return this.http.post<CheckSolutionResponse>(
-      `${this.apiUrl}/check-solution/${id}`,
+  checkSolution(id: string, solution: Solution): Observable<SolutionValidation> {
+    return this.http.post<SolutionValidation>(
+      `${this.apiUrl}/${id}/check-solution`,
       solution
+    );
+  }
+
+  showSolution(id: string): Observable<Solution> {
+    return this.http.get<Solution>(
+      `${this.apiUrl}/${id}/show-solution`,
+      {}
     );
   }
 

@@ -1,0 +1,79 @@
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+  box-sizing: border-box;
+
+  background: rgb(0 0 0 / 35%);
+}
+
+.dialog-window {
+  width: min(100%, 420px);
+  padding: 24px;
+  box-sizing: border-box;
+
+  border: 1px solid #ddd;
+  border-radius: 14px;
+  background: #fff;
+
+  box-shadow: 0 16px 45px rgb(0 0 0 / 18%);
+}
+
+.dialog-message {
+  margin-top: 10px;
+  color: #666;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.dialog-button {
+  min-width: 100px;
+  padding: 8px 14px;
+
+  border: 1px solid #bbb;
+  border-radius: 8px;
+  background: #fff;
+
+  cursor: pointer;
+}
+
+.dialog-button:hover {
+  background: #f0f0f0;
+}
+
+.confirm-button {
+  border-color: #2e7d32;
+  background: #eef8ee;
+  color: #256429;
+}
+
+.confirm-button:hover {
+  background: #e2f2e2;
+}
+
+@media (max-width: 560px) {
+  .dialog-window {
+    padding: 20px;
+  }
+
+  .dialog-actions {
+    flex-direction: column-reverse;
+  }
+
+  .dialog-button {
+    width: 100%;
+  }
+}
