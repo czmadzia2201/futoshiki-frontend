@@ -244,10 +244,11 @@ button:disabled {
 .number-panel button.selected {
   border-color: #2e7d32;
   background: #eef8ee;
+  color: #256429;
 }
 
 .number-panel button:hover {
-  background: #f6f6f6;
+  background: #e2f2e2;
 }
 
 .edit-controls button {
