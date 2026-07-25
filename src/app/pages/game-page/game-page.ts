@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { finalize } from 'rxjs';
 import { GameService } from '../../services/game-service';
 import { DialogComponent } from '../../dialog/dialog';
 import { ActiveGame } from '../../models/active-game';
@@ -32,6 +33,7 @@ export class GamePage {
   selectedNumber: number | null = null;
   conflictPositions: Position[] = []; // One based!
   isGameFinished: boolean = false;
+  isLoading: boolean = false;
   moves: Move[] = [];
 
   dialogConfig: DialogConfig | null = null;
@@ -47,12 +49,24 @@ export class GamePage {
   readonly BoardElementType = BoardElementType;
 
   newGame(): void {
-    this.gameService.newGame(this.selectedSize, this.selectedDifficulty, this.selectedStrategy).subscribe(response => {
-      this.activeGame = response;
-      this.currentGrid = response.board.grid.map(row => [...row]);
-      this.clearGameStateActions();
-      this.isGameFinished = false;
-    });
+    this.isLoading = true;
+
+    this.gameService
+      .newGame(this.selectedSize, this.selectedDifficulty, this.selectedStrategy)
+      .pipe(
+        finalize(() => this.isLoading = false)
+      )
+      .subscribe({
+        next: response => {
+          this.activeGame = response;
+          this.currentGrid = response.board.grid.map(row => [...row]);
+          this.clearGameStateActions();
+          this.isGameFinished = false;
+        },
+        error: error => {
+          console.error('Could not load game', error);
+        }
+      });
   }
 
   private checkSolution(): void {
