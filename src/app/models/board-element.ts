@@ -3,6 +3,7 @@ import { ConstraintOperator } from './constraint-operator';
 export interface BoardElement {
   type: BoardElementType;
   value: number | null;
+  candidates: number[] | null;
   operator: ConstraintOperator | null;
 }
 

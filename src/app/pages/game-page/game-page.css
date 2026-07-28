@@ -239,7 +239,8 @@ button:disabled {
 .number-stats-table {
   border-collapse: separate;
   border-spacing: 0;
-  font-size: 12px;
+  font-size: 10px;
+  font-family: system-ui;
   text-align: center;
   overflow: hidden;
   border: 1px solid #ddd;
@@ -263,6 +264,12 @@ button:disabled {
 
 .edit-controls button {
   width: 125px;
+}
+
+.edit-controls button.selected {
+  border-color: #2e7d32;
+  background: #eef8ee;
+  color: #256429;
 }
 
 .board-container {
@@ -293,7 +300,8 @@ button:disabled {
   border-radius: 7px;
   background: #fff;
   font-size: 20px;
-  font-weight: 700;
+  font-weight: 600;
+  font-family: system-ui;
   appearance: none;
   cursor: pointer;
 }
@@ -463,4 +471,23 @@ button:disabled {
   to {
     transform: rotate(360deg);
   }
+}
+
+.candidates {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+}
+
+.candidate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  font-family: "Kristen ITC", system-ui;
+  font-weight: 300;
+  color: #999;
+  line-height: 1;
 }

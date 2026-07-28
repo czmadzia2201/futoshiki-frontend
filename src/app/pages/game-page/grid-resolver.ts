@@ -3,7 +3,7 @@ import { BoardElement, BoardElementType } from '../../models/board-element';
 
 export class GridResolver {
 
-    static resolve(activeGame: ActiveGame, currentGrid: number[][]): BoardElement[][] {
+    static resolve(activeGame: ActiveGame, currentGrid: number[][], candidates: number[][][]): BoardElement[][] {
       const size = activeGame.board.size * 2 - 1;
 
       const fullBoard: BoardElement[][] = new Array(size);
@@ -14,27 +14,37 @@ export class GridResolver {
         for (let col = 0; col < size; col++) {
           if (this.isEven(row) && this.isEven(col)) {
             const value = currentGrid[row / 2][col / 2];
+            const cellCandidates = candidates[row / 2][col / 2]
+            if (value !== 0 && cellCandidates.length !== 0) {
+              throw new Error(
+                  `Invariant violated at (${row/2}, ${col/2}): filled cell cannot contain candidates.`
+              );
+            }
             fullBoard[row][col] = {
               type: BoardElementType.CELL,
               value: value === 0 ? null : value,
+              candidates: cellCandidates,
               operator: null
             };
           } else if (this.isOdd(row) && this.isOdd(col)) {
             fullBoard[row][col] = {
               type: BoardElementType.EMPTY,
               value: null,
+              candidates: null,
               operator: null
             };
           } else if (this.isOdd(row) && this.isEven(col)) {
             fullBoard[row][col] = {
               type: BoardElementType.VERTICAL_CONSTRAINT,
               value: null,
+              candidates: null,
               operator: null
             };
           } else {
             fullBoard[row][col] = {
               type: BoardElementType.HORIZONTAL_CONSTRAINT,
               value: null,
+              candidates: null,
               operator: null
             };
           }

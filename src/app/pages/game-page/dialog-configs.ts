@@ -27,6 +27,14 @@ export const NEW_GAME_DIALOG: DialogConfig = {
   showCancelButton: true
 };
 
+export const UNDO_UNAVAILABLE_DIALOG: DialogConfig = {
+  type: DialogType.UNDO_UNAVAILABLE,
+  title: 'Undo unavailable',
+  paragraphs: ['Undo is unavailable in Pencil Mode.'],
+  confirmLabel: 'OK',
+  showCancelButton: false
+};
+
 export const GAME_WON_DIALOG: DialogConfig = {
   type: DialogType.GAME_WON,
   title: 'Congratulations!',

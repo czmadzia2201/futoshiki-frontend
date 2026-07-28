@@ -12,5 +12,6 @@ export enum DialogType {
   RESET_BOARD,
   NEW_GAME,
   GAME_WON,
+  UNDO_UNAVAILABLE,
   ABOUT
 }

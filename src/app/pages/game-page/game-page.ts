@@ -17,7 +17,7 @@ import { NumberStatistic } from '../../models/number-statistic';
 import { Move } from '../../models/move';
 import { GridResolver } from './grid-resolver';
 import { BoardValidator } from './board-validator';
-import { SHOW_SOLUTION_DIALOG, RESET_BOARD_DIALOG, NEW_GAME_DIALOG, GAME_WON_DIALOG, ABOUT } from './dialog-configs';
+import { SHOW_SOLUTION_DIALOG, RESET_BOARD_DIALOG, NEW_GAME_DIALOG, UNDO_UNAVAILABLE_DIALOG, GAME_WON_DIALOG, ABOUT } from './dialog-configs';
 
 @Component({
   selector: 'app-game-page',
@@ -37,6 +37,8 @@ export class GamePage {
   isGameFinished: boolean = false;
   isLoading: boolean = false;
   moves: Move[] = [];
+  candidates: number[][][] = [];
+  isPencilMode = false;
 
   dialogConfig: DialogConfig | null = null;
 
@@ -47,7 +49,7 @@ export class GamePage {
   readonly boardSizes = [4, 5, 6, 7, 8, 9];
   readonly difficultyLevels = Object.values(Difficulty);
   readonly providerStrategies = Object.values(ProviderStrategy);
-  readonly popupNumbers = [1,2,3,4,5,6,7,8,9];
+  readonly allNumbers = [1,2,3,4,5,6,7,8,9];
 
   readonly BoardElementType = BoardElementType;
 
@@ -82,6 +84,17 @@ export class GamePage {
       });
   }
 
+  private createEmptyCandidates(): number[][][] {
+    if (!this.activeGame) {
+      return [];
+    }
+    const size = this.activeGame.board.size;
+    return Array.from(
+      { length: size },
+      () => Array.from({ length: size }, () => [])
+    );
+  }
+
   private checkSolution(): void {
     const request: Solution = {
       solution: this.currentGrid
@@ -101,6 +114,7 @@ export class GamePage {
     this.gameService
       .showSolution(this.activeGame!.gameId).subscribe(response => {
         this.currentGrid = response.solution;
+        this.numberStatistics = this.calculateNumberStatistics();
         this.clearGameStateActions();
         this.isGameFinished = true;
       });
@@ -114,10 +128,17 @@ export class GamePage {
     this.numberStatistics = this.calculateNumberStatistics();
   }
 
+  switchPencilMode(): void {
+    this.isPencilMode = !this.isPencilMode;
+    console.log(this.isPencilMode);
+  }
+
   private clearGameStateActions(): void {
     this.selectedCell = null;
+    this.candidates = this.createEmptyCandidates();
     this.conflictPositions = [];
     this.moves = [];
+    this.isPencilMode = false;
   }
 
   calculateNumberStatistics(): NumberStatistic[] {
@@ -144,7 +165,7 @@ export class GamePage {
       return [];
     }
 
-    return GridResolver.resolve(this.activeGame, this.currentGrid);
+    return GridResolver.resolve(this.activeGame, this.currentGrid, this.candidates);
   }
 
   fullBoardSize(): number {
@@ -183,8 +204,23 @@ export class GamePage {
     this.selectedCell = { row, col };
   }
 
+  setCellValue(value: number): void {
+    if (!this.selectedCell) {
+        return;
+    }
+
+    if (this.isPencilMode) {
+      this.toggleCandidate(this.selectedCell.row, this.selectedCell.col, value);
+    } else {
+      this.fillCellWithValue(this.selectedCell.row, this.selectedCell.col, value);
+    }
+
+    this.selectedCell = null;
+  }
+
   private fillCellWithValue(row: number, col: number, value: number): void {
     const beforeValue = this.currentGrid[row][col];
+    this.candidates[row][col] = [];
     this.currentGrid[row][col] = value;
     this.conflictPositions = BoardValidator.validate(this.activeGame!, this.currentGrid);
     this.numberStatistics = this.calculateNumberStatistics();
@@ -195,18 +231,29 @@ export class GamePage {
     }
   }
 
-  setCellValue(value: number): void {
-    if (!this.selectedCell) {
-        return;
+  private toggleCandidate(row: number, col: number, value: number): void {
+    if (!this.isEmptyCell(row, col)) {
+      return;
     }
+    const cellCandidates = this.candidates[row][col];
+    if (value === 0) {
+      cellCandidates.length = 0;
+    } else {
+      if (cellCandidates.includes(value)) {
+        const index = cellCandidates.indexOf(value);
+        cellCandidates.splice(index, 1);
+      } else {
+        cellCandidates.push(value);
+      }
+    }
+  }
 
-    this.fillCellWithValue(
-        this.selectedCell.row,
-        this.selectedCell.col,
-        value
-    );
-
-    this.selectedCell = null;
+  handleUndoMove() {
+    if (this.isPencilMode) {
+      this.openUndoUnavailableDialog();
+    } else {
+      this.undoMove();
+    }
   }
 
   undoMove(): void {
@@ -238,6 +285,10 @@ export class GamePage {
       && this.selectedCell?.col === colIndex / 2;
   }
 
+  isEmptyCell(row: number, col: number): boolean {
+    return this.currentGrid[row][col] === 0;
+  }
+
   isEditableCell(rowIndex: number, colIndex: number): boolean {
     return this.activeGame?.board.grid[rowIndex/2][colIndex/2] === 0;
   }
@@ -257,6 +308,10 @@ export class GamePage {
 
   openResetBoardDialog(): void {
     this.dialogConfig = RESET_BOARD_DIALOG;
+  }
+
+  openUndoUnavailableDialog(): void {
+    this.dialogConfig = UNDO_UNAVAILABLE_DIALOG;
   }
 
   openNewGameDialog(): void {
@@ -284,6 +339,7 @@ export class GamePage {
         break;
       case DialogType.GAME_WON:
       case DialogType.ABOUT:
+      case DialogType.UNDO_UNAVAILABLE:
         this.closeDialog();
         break;
     }

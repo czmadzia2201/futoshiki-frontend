@@ -113,12 +113,24 @@
                       [class.selected-cell]="isSelectedCell(rowIndex, colIndex)"
                       (click)="handleCellClick(rowIndex, colIndex)"
                     >
-                      {{ cell.value }}
+                      @if (cell.value !== null) {
+                        {{ cell.value }}
+                      } @else {
+                      <div class="candidates">
+                        @for (number of allNumbers; track number) {
+                        <span class="candidate">
+                          @if (cell.candidates?.includes(number)) {
+                            {{ number }}
+                          }
+                        </span>
+                        }
+                      </div>
+                      }
 
                       @if (isSelectedCell(rowIndex, colIndex)) {
                       <div class="number-popup" (click)="$event.stopPropagation()">
                         <div class="number-popup-grid">
-                          @for (number of popupNumbers; track number) {
+                          @for (number of allNumbers; track number) {
                           <span
                             [class.disabled]="!isNumberAvailable(number)"
                             (click)="isNumberAvailable(number) && setCellValue(number)">
@@ -164,10 +176,10 @@
       <div class="game-section-content edit-section-content">
         @if (activeGame) {
           <div class="edit-controls">
-            <button type="button" [disabled]="isGameFinished">
+            <button type="button" (click)="switchPencilMode()" [disabled]="isGameFinished" [class.selected]="isPencilMode">
               <i class="bi bi-pencil"></i> Pencil
             </button>
-            <button type="button" (click)="undoMove()" [disabled]="isGameFinished">
+            <button type="button" (click)="handleUndoMove()" [disabled]="isGameFinished">
               <i class="bi bi-arrow-counterclockwise"></i> Undo
             </button>
             <button type="button" (click)="openResetBoardDialog()" [disabled]="isGameFinished">
