@@ -99,9 +99,9 @@
         @if (activeGame) {
           <div
             class="board-container"
-            [style.--board-size]="fullBoardSize()"
+            [style.--board-size]="renderedBoardSize()"
           >
-            @for (row of drawGrid(); track $index; let rowIndex = $index) {
+            @for (row of resolveGrid(); track $index; let rowIndex = $index) {
               @for (cell of row; track $index; let colIndex = $index) {
                 @switch (cell.type) {
                   @case (BoardElementType.CELL) {
@@ -128,19 +128,11 @@
                       }
 
                       @if (isSelectedCell(rowIndex, colIndex)) {
-                      <div class="number-popup" (click)="$event.stopPropagation()">
-                        <div class="number-popup-grid">
-                          @for (number of allNumbers; track number) {
-                          <span
-                            [class.disabled]="!isNumberAvailable(number)"
-                            (click)="isNumberAvailable(number) && setCellValue(number)">
-                            {{ isNumberAvailable(number) ? number : '–' }}
-                          </span>
-                          }
-                        </div>
-
-                        <span class="number-popup-clear" (click)="setCellValue(0)">×</span>
-                      </div>
+                        <app-number-popup
+                          [allNumbers]="allNumbers"
+                          [boardSize]="activeGame.board.size"
+                          (numberSelected)="setCellValue($event)"
+                        />
                       }
                     </div>
                   }

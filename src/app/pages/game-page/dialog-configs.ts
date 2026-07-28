@@ -43,7 +43,7 @@ export const GAME_WON_DIALOG: DialogConfig = {
   showCancelButton: false
 };
 
-export const ABOUT: DialogConfig = {
+export const ABOUT_DIALOG: DialogConfig = {
   type: DialogType.ABOUT,
   title: 'About the Game',
   paragraphs: [

@@ -6,7 +6,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   templateUrl: './dialog.html',
   styleUrl: './dialog.css'
 })
-export class DialogComponent {
+export class Dialog {
 
   @Input() title = '';
   @Input() paragraphs: string[] = [];
@@ -16,6 +16,6 @@ export class DialogComponent {
 
   @Input() showCancelButton = true;
 
-  @Output() confirmed = new EventEmitter<void>();
-  @Output() cancelled = new EventEmitter<void>();
+  @Output() readonly confirmed = new EventEmitter<void>();
+  @Output() readonly cancelled = new EventEmitter<void>();
 }

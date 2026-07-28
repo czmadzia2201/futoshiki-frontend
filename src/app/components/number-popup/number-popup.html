@@ -1,0 +1,13 @@
+<div class="number-popup" (click)="$event.stopPropagation()">
+  <div class="number-popup-grid">
+    @for (number of allNumbers; track number) {
+    <span
+      [class.disabled]="!isNumberAvailable(number)"
+      (click)="isNumberAvailable(number) && numberSelected.emit(number)">
+        {{ isNumberAvailable(number) ? number : '–' }}
+    </span>
+    }
+  </div>
+
+  <span class="number-popup-clear" (click)="numberSelected.emit(0)">×</span>
+</div>

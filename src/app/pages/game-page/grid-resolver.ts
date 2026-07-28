@@ -51,11 +51,11 @@ export class GridResolver {
         }
       }
 
-      this.drawGridConstraints(activeGame, fullBoard);
+      this.populateConstraints(activeGame, fullBoard);
       return fullBoard;
     }
 
-    private static drawGridConstraints(activeGame: ActiveGame, fullBoard: BoardElement[][]): void {
+    private static populateConstraints(activeGame: ActiveGame, fullBoard: BoardElement[][]): void {
       const constraints = activeGame!.board.constraints;
       for (const constraint of constraints) {
         const fromRow = (constraint.from.row - 1) * 2;

@@ -13,9 +13,9 @@ import { SolutionValidation } from '../models/solution-validation';
 })
 export class GameService {
 
-  private apiUrl = 'http://localhost:8080/futoshiki';
+  private readonly apiUrl = 'http://localhost:8080/futoshiki';
 
-  constructor(private http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {}
 
   newGame(size: number, difficulty: Difficulty, strategy?: ProviderStrategy): Observable<ActiveGame> {
     let params = new HttpParams();
