@@ -9,6 +9,24 @@ export const SHOW_SOLUTION_DIALOG: DialogConfig = {
   showCancelButton: true
 };
 
+export const RESET_BOARD_DIALOG: DialogConfig = {
+  type: DialogType.RESET_BOARD,
+  title: 'Reset board?',
+  paragraphs: ['Your current game progress will be lost. Are you sure you want to continue?'],
+  confirmLabel: 'Reset board',
+  cancelLabel: 'Cancel',
+  showCancelButton: true
+};
+
+export const NEW_GAME_DIALOG: DialogConfig = {
+  type: DialogType.NEW_GAME,
+  title: 'Start new game?',
+  paragraphs: ['You have a game in progress. Are you sure you want to start a new one?'],
+  confirmLabel: 'Start new game',
+  cancelLabel: 'Cancel',
+  showCancelButton: true
+};
+
 export const GAME_WON_DIALOG: DialogConfig = {
   type: DialogType.GAME_WON,
   title: 'Congratulations!',

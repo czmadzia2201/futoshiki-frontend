@@ -9,6 +9,8 @@ export interface DialogConfig {
 
 export enum DialogType {
   SHOW_SOLUTION,
+  RESET_BOARD,
+  NEW_GAME,
   GAME_WON,
   ABOUT
 }

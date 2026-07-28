@@ -13,10 +13,11 @@ import { ConstraintOperator } from '../../models/constraint-operator';
 import { Position } from '../../models/position';
 import { Solution } from '../../models/solution';
 import { SolutionValidation } from '../../models/solution-validation';
+import { NumberStatistic } from '../../models/number-statistic';
 import { Move } from '../../models/move';
 import { GridResolver } from './grid-resolver';
 import { BoardValidator } from './board-validator';
-import { SHOW_SOLUTION_DIALOG, GAME_WON_DIALOG, ABOUT } from './dialog-configs';
+import { SHOW_SOLUTION_DIALOG, RESET_BOARD_DIALOG, NEW_GAME_DIALOG, GAME_WON_DIALOG, ABOUT } from './dialog-configs';
 
 @Component({
   selector: 'app-game-page',
@@ -30,8 +31,9 @@ export class GamePage {
 
   activeGame: ActiveGame | null = null;
   currentGrid: number[][] = []; // Zero based!
-  selectedNumber: number | null = null;
   conflictPositions: Position[] = []; // One based!
+  numberStatistics: NumberStatistic[] = [];
+  selectedCell: { row: number; col: number } | null = null;
   isGameFinished: boolean = false;
   isLoading: boolean = false;
   moves: Move[] = [];
@@ -45,10 +47,20 @@ export class GamePage {
   readonly boardSizes = [4, 5, 6, 7, 8, 9];
   readonly difficultyLevels = Object.values(Difficulty);
   readonly providerStrategies = Object.values(ProviderStrategy);
+  readonly popupNumbers = [1,2,3,4,5,6,7,8,9];
 
   readonly BoardElementType = BoardElementType;
 
+  handleStartNewGame(): void {
+    if (this.activeGame && !this.isGameFinished) {
+      this.openNewGameDialog();
+    } else {
+      this.newGame();
+    }
+  }
+
   newGame(): void {
+    this.closeDialog();
     this.isLoading = true;
 
     this.gameService
@@ -60,6 +72,7 @@ export class GamePage {
         next: response => {
           this.activeGame = response;
           this.currentGrid = response.board.grid.map(row => [...row]);
+          this.numberStatistics = this.calculateNumberStatistics();
           this.clearGameStateActions();
           this.isGameFinished = false;
         },
@@ -93,27 +106,37 @@ export class GamePage {
       });
   }
 
-  openShowSolutionDialog(): void {
-    this.dialogConfig = SHOW_SOLUTION_DIALOG;
-  }
-
-  openGameWonDialog(): void {
-    this.dialogConfig = GAME_WON_DIALOG;
-  }
-
-  openAboutDialog(): void {
-    this.dialogConfig = ABOUT;
-  }
-
   resetBoard(): void {
+    this.closeDialog();
+
     this.currentGrid = this.activeGame!.board.grid.map(row => [...row]);
     this.clearGameStateActions();
+    this.numberStatistics = this.calculateNumberStatistics();
   }
 
   private clearGameStateActions(): void {
+    this.selectedCell = null;
     this.conflictPositions = [];
-    this.selectedNumber = null;
     this.moves = [];
+  }
+
+  calculateNumberStatistics(): NumberStatistic[] {
+    const numStatMap = new Map<number, number>();
+
+    for (let row = 0; row < this.currentGrid.length; row++) {
+      for (let col = 0; col < this.currentGrid[row].length; col++) {
+        const cellValue = this.currentGrid[row][col];
+        if (cellValue !== 0) {
+          numStatMap.set(cellValue, (numStatMap.get(cellValue) ?? 0) + 1);
+        }
+      }
+    }
+
+    const numStatList: NumberStatistic[] = [];
+    for (let value = 1; value <= this.currentGrid.length; value++) {
+      numStatList.push({ value, count: numStatMap.get(value) ?? 0 });
+    }
+    return numStatList;
   }
 
   drawGrid(): BoardElement[][] {
@@ -141,35 +164,49 @@ export class GamePage {
     }
   }
 
-  selectNumber(number: number): void {
-    this.selectedNumber =
-      this.selectedNumber === number ? null : number;
-  }
-
-  isSelectedNumber(number: number): boolean {
-    return this.selectedNumber === number;
-  }
-
-  fillCell(rowIndex: number, colIndex: number): void {
-    if (this.selectedNumber === null) {
-      return;
-    }
-
-    if (!this.isEditableCell(rowIndex, colIndex)) {
+  handleCellClick(rowIndex: number, colIndex: number): void {
+    if (this.isGameFinished || !this.isEditableCell(rowIndex, colIndex)) {
       return;
     }
 
     const row = rowIndex / 2;
     const col = colIndex / 2;
 
+    if (
+      this.selectedCell?.row === row &&
+      this.selectedCell?.col === col
+    ) {
+      this.selectedCell = null;
+      return;
+    }
+
+    this.selectedCell = { row, col };
+  }
+
+  private fillCellWithValue(row: number, col: number, value: number): void {
     const beforeValue = this.currentGrid[row][col];
-    this.currentGrid[row][col] = this.selectedNumber;
+    this.currentGrid[row][col] = value;
     this.conflictPositions = BoardValidator.validate(this.activeGame!, this.currentGrid);
-    this.moves.push({ beforeValue: beforeValue, afterValue: this.selectedNumber, position: {row: row + 1, col: col + 1}});
+    this.numberStatistics = this.calculateNumberStatistics();
+    this.moves.push({ beforeValue: beforeValue, afterValue: value, position: {row: row + 1, col: col + 1}});
 
     if (this.isBoardReadyToCheck()) {
       this.checkSolution();
     }
+  }
+
+  setCellValue(value: number): void {
+    if (!this.selectedCell) {
+        return;
+    }
+
+    this.fillCellWithValue(
+        this.selectedCell.row,
+        this.selectedCell.col,
+        value
+    );
+
+    this.selectedCell = null;
   }
 
   undoMove(): void {
@@ -185,6 +222,7 @@ export class GamePage {
       this.currentGrid[row][col] = lastMove.beforeValue;
     }
     this.conflictPositions = BoardValidator.validate(this.activeGame!, this.currentGrid);
+    this.numberStatistics = this.calculateNumberStatistics();
   }
 
   private isBoardReadyToCheck(): boolean {
@@ -193,6 +231,11 @@ export class GamePage {
     );
 
     return isBoardFilled && this.conflictPositions.length === 0;
+  }
+
+  isSelectedCell(rowIndex: number, colIndex: number): boolean {
+    return this.selectedCell?.row === rowIndex / 2
+      && this.selectedCell?.col === colIndex / 2;
   }
 
   isEditableCell(rowIndex: number, colIndex: number): boolean {
@@ -204,13 +247,28 @@ export class GamePage {
             this.conflictPositions.some(p => p.row === rowIndex/2 + 1 && p.col === colIndex/2 + 1);
   }
 
-  availableNumbers(): number[] {
-    const size = this.activeGame ? this.activeGame.board.size + 1 : 0;
+  isNumberAvailable(value: number): boolean {
+    return value <= this.activeGame!.board.size;
+  }
 
-    return Array.from(
-      { length: size },
-      (_, index) => index
-    );
+  openShowSolutionDialog(): void {
+    this.dialogConfig = SHOW_SOLUTION_DIALOG;
+  }
+
+  openResetBoardDialog(): void {
+    this.dialogConfig = RESET_BOARD_DIALOG;
+  }
+
+  openNewGameDialog(): void {
+    this.dialogConfig = NEW_GAME_DIALOG;
+  }
+
+  openGameWonDialog(): void {
+    this.dialogConfig = GAME_WON_DIALOG;
+  }
+
+  openAboutDialog(): void {
+    this.dialogConfig = ABOUT;
   }
 
   handleDialogConfirmation(): void {
@@ -218,7 +276,12 @@ export class GamePage {
       case DialogType.SHOW_SOLUTION:
         this.confirmShowSolution();
         break;
-
+      case DialogType.RESET_BOARD:
+        this.resetBoard();
+        break;
+      case DialogType.NEW_GAME:
+        this.newGame();
+        break;
       case DialogType.GAME_WON:
       case DialogType.ABOUT:
         this.closeDialog();
@@ -229,7 +292,5 @@ export class GamePage {
   closeDialog(): void {
     this.dialogConfig = null;
   }
-
-
 
 }

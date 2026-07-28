@@ -167,7 +167,7 @@ button:disabled {
   margin: 0;
   padding: 0 8px;
   background: #fff;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1;
   transform: translateY(-50%);
 }
@@ -217,7 +217,6 @@ button:disabled {
   width: min(100%, 480px);
   min-height: 38px;
   padding: 8px 14px;
-  font-size: 13px;
 }
 
 .board-placeholder {
@@ -229,7 +228,7 @@ button:disabled {
   font-weight: 500;
 }
 
-.number-panel,
+.number-stats,
 .edit-controls {
   display: flex;
   justify-content: center;
@@ -237,18 +236,29 @@ button:disabled {
   gap: 12px;
 }
 
-.number-panel button {
-  width: 34px;
+.number-stats-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 12px;
+  text-align: center;
+  overflow: hidden;
+  border: 1px solid #ddd;
+  border-radius: 6px;
 }
 
-.number-panel button.selected {
-  border-color: #2e7d32;
-  background: #eef8ee;
-  color: #256429;
+.number-stats-table th,
+.number-stats-table td {
+  min-width: 34px;
+  padding: 3px 8px;
 }
 
-.number-panel button:hover {
-  background: #e2f2e2;
+.number-stats-table th {
+  background-color: #eee;
+  font-weight: 600;
+}
+
+.number-stats-table td {
+  background-color: white;
 }
 
 .edit-controls button {
@@ -300,6 +310,11 @@ button:disabled {
   color: #c62828;
 }
 
+.selected-cell {
+  outline: 2px solid #666;
+  outline-offset: -2px;
+}
+
 .horizontal-constraint {
   width: 20px;
   height: 36px;
@@ -324,6 +339,50 @@ button:disabled {
   display: inline-block;
   transform: rotate(90deg) scaleY(2.5);
 }
+
+/* number popup */
+.number-popup {
+  position: absolute;
+  top: 50%;
+  left: calc(100% + 6px);
+  transform: translateY(-50%);
+
+  width: 92px;
+  padding: 8px;
+
+  background: #eef8ee;
+  border: 1px solid #2e7d32;
+  border-radius: 4px;
+  box-shadow: 0 3px 10px rgb(0 0 0 / 18%);
+
+  z-index: 10;
+}
+
+.number-popup-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3px;
+}
+
+.number-popup-grid span,
+.number-popup-clear {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #256429;
+  min-height: 24px;
+  font-size: 14px;
+}
+
+.number-popup-clear {
+  margin-top: 4px;
+}
+.number-popup-grid span.disabled {
+    color: #999;
+    cursor: default;
+}
+
+/* number popup end */
 
 @media (max-width: 850px) {
   .game-layout {

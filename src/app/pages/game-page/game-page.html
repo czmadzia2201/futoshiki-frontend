@@ -47,7 +47,7 @@
         </span>
       </label>
 
-      <button class="new-game-button" type="button" (click)="newGame()">
+      <button class="new-game-button" type="button" (click)="handleStartNewGame()">
         New Game
       </button>
 
@@ -62,25 +62,31 @@
   <main class="game-panel">
 
     <section class="game-section number-section" aria-labelledby="numbers-title">
-      <h2 id="numbers-title" class="game-section-title">Numbers</h2>
+      <h2 id="numbers-title" class="game-section-title">Number statistics</h2>
 
       <div class="game-section-content number-section-content">
         @if (activeGame) {
-          <div class="number-panel">
-            @for (number of availableNumbers(); track number) {
-              <button
-                type="button"
-                [class.selected]="isSelectedNumber(number)"
-                [disabled]="isGameFinished"
-                (click)="selectNumber(number)"
-              >
-                {{ number === 0 ? "×" : number }}
-              </button>
-            }
+          <div class="number-stats">
+            <table class="number-stats-table">
+              <thead>
+              <tr>
+                @for (stat of numberStatistics; track stat.value) {
+                <th>{{ stat.value }}</th>
+                }
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                @for (stat of numberStatistics; track stat.value) {
+                <td>{{ stat.count }}</td>
+                }
+              </tr>
+              </tbody>
+            </table>
           </div>
         } @else {
           <div class="section-placeholder compact-placeholder">
-            Start a game to display available numbers.
+            Start a new game to display number statistics.
           </div>
         }
       </div>
@@ -104,9 +110,26 @@
                       [class.given]="!isEditableCell(rowIndex, colIndex)"
                       [class.user]="isEditableCell(rowIndex, colIndex)"
                       [class.invalid]="isInvalidCell(rowIndex, colIndex)"
-                      (click)="fillCell(rowIndex, colIndex)"
+                      [class.selected-cell]="isSelectedCell(rowIndex, colIndex)"
+                      (click)="handleCellClick(rowIndex, colIndex)"
                     >
                       {{ cell.value }}
+
+                      @if (isSelectedCell(rowIndex, colIndex)) {
+                      <div class="number-popup" (click)="$event.stopPropagation()">
+                        <div class="number-popup-grid">
+                          @for (number of popupNumbers; track number) {
+                          <span
+                            [class.disabled]="!isNumberAvailable(number)"
+                            (click)="isNumberAvailable(number) && setCellValue(number)">
+                            {{ isNumberAvailable(number) ? number : '–' }}
+                          </span>
+                          }
+                        </div>
+
+                        <span class="number-popup-clear" (click)="setCellValue(0)">×</span>
+                      </div>
+                      }
                     </div>
                   }
                   @case (BoardElementType.HORIZONTAL_CONSTRAINT) {
@@ -147,7 +170,7 @@
             <button type="button" (click)="undoMove()" [disabled]="isGameFinished">
               <i class="bi bi-arrow-counterclockwise"></i> Undo
             </button>
-            <button type="button" (click)="resetBoard()" [disabled]="isGameFinished">
+            <button type="button" (click)="openResetBoardDialog()" [disabled]="isGameFinished">
               <i class="bi bi-trash"></i> Reset board
             </button>
             <button type="button" (click)="openShowSolutionDialog()" [disabled]="isGameFinished">
