@@ -35,6 +35,13 @@ export class GamePage {
   readonly providerStrategies = Object.values(ProviderStrategy);
   readonly allNumbers = [1,2,3,4,5,6,7,8,9];
 
+  readonly providerLabels: Record<ProviderStrategy, string> = {
+    [ProviderStrategy.GENERATOR]: 'Generator',
+    [ProviderStrategy.FILE]: 'Files',
+    [ProviderStrategy.AI]: 'AI',
+    [ProviderStrategy.FUTOSHIKI_COM_API]: 'Futoshiki.com'
+  };
+
   readonly BoardElementType = BoardElementType;
 
   selectedSize = 4;

@@ -40,7 +40,7 @@
           <select name="strategySelect" [(ngModel)]="selectedStrategy">
             @for (strategy of providerStrategies; track strategy) {
               <option [ngValue]="strategy">
-                {{ strategy }}
+                {{ providerLabels[strategy] }}
               </option>
             }
           </select>

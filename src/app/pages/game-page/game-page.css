@@ -93,7 +93,6 @@ select {
   color: #2d2d2d;
   font-size: 12px;
   line-height: 1;
-  text-transform: capitalize;
   appearance: none;
   cursor: pointer;
   transition:
