@@ -1,6 +1,7 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
 import { GameService } from '../../services/game-service';
 import { Dialog } from '../../components/dialog/dialog';
 import { NumberPopup } from '../../components/number-popup/number-popup';
@@ -9,6 +10,7 @@ import { DialogConfig, DialogType } from '../../models/dialog-config';
 import { Difficulty } from '../../models/difficulty';
 import { ProviderStrategy } from '../../models/provider-strategy';
 import { FutoshikiBoard } from '../../models/futoshiki-board';
+import { FutoshikiSettings } from '../../models/futoshiki-settings';
 import { BoardElement, BoardElementType } from '../../models/board-element';
 import { ConstraintOperator } from '../../models/constraint-operator';
 import { Position } from '../../models/position';
@@ -18,7 +20,16 @@ import { NumberStatistic } from '../../models/number-statistic';
 import { Move } from '../../models/move';
 import { GridResolver } from './grid-resolver';
 import { BoardValidator } from './board-validator';
-import { ABOUT_DIALOG, NEW_GAME_DIALOG, UNDO_UNAVAILABLE_DIALOG, RESET_BOARD_DIALOG, SHOW_SOLUTION_DIALOG, GAME_WON_DIALOG } from './dialog-configs';
+import { ABOUT_DIALOG,
+         UNDO_UNAVAILABLE_DIALOG,
+         GAME_WON_DIALOG,
+         NEW_GAME_DIALOG,
+         RESET_BOARD_DIALOG,
+         SHOW_SOLUTION_DIALOG,
+         OPENAI_LOADING_ERROR_DIALOG,
+         FC_API_LOADING_ERROR_DIALOG,
+         FILE_LOADING_ERROR_DIALOG,
+         UNKNOWN_ERROR_DIALOG } from './dialog-configs';
 
 @Component({
   selector: 'app-game-page',
@@ -26,9 +37,10 @@ import { ABOUT_DIALOG, NEW_GAME_DIALOG, UNDO_UNAVAILABLE_DIALOG, RESET_BOARD_DIA
   templateUrl: './game-page.html',
   styleUrl: './game-page.css',
 })
-export class GamePage {
+export class GamePage implements OnInit {
 
   private readonly gameService = inject(GameService);
+  private readonly settingsKey = 'futoshiki-settings';
 
   readonly boardSizes = [4, 5, 6, 7, 8, 9];
   readonly difficultyLevels = Object.values(Difficulty);
@@ -62,9 +74,13 @@ export class GamePage {
   isLoading = false;
   isPencilMode = false;
 
+  ngOnInit(): void {
+    this.loadSettings();
+  }
+
   // Start and finish game actions
   handleStartNewGame(): void {
-    if (this.activeGame && !this.isGameFinished) {
+    if (this.activeGame && !this.isGameFinished && this.moves.length != 0) {
       this.openNewGameDialog();
     } else {
       this.newGame();
@@ -74,6 +90,7 @@ export class GamePage {
   private newGame(): void {
     this.closeDialog();
     this.isLoading = true;
+    this.saveSettings();
 
     this.gameService
       .newGame(this.selectedSize, this.selectedDifficulty, this.selectedStrategy)
@@ -90,6 +107,7 @@ export class GamePage {
         },
         error: error => {
           console.error('Could not load game', error);
+          this.handleNewGameError(error);
         }
       });
   }
@@ -105,6 +123,38 @@ export class GamePage {
           this.openGameWonDialog();
       }
     });
+  }
+
+  // Save and load settings
+  private saveSettings(): void {
+    const settings: FutoshikiSettings = {
+      size: this.selectedSize,
+      difficulty: this.selectedDifficulty,
+      strategy: this.selectedStrategy
+    };
+
+    localStorage.setItem(
+      this.settingsKey,
+      JSON.stringify(settings)
+    );
+  }
+
+  private loadSettings(): void {
+    const savedSettings = localStorage.getItem(this.settingsKey);
+
+    if (!savedSettings) {
+      return;
+    }
+
+    try {
+      const settings: FutoshikiSettings = JSON.parse(savedSettings);
+
+      this.selectedSize = settings.size;
+      this.selectedDifficulty = settings.difficulty;
+      this.selectedStrategy = settings.strategy;
+    } catch {
+      localStorage.removeItem(this.settingsKey);
+    }
   }
 
   // Fill game board actions
@@ -336,6 +386,22 @@ export class GamePage {
     this.dialogConfig = GAME_WON_DIALOG;
   }
 
+  private handleNewGameError(error: HttpErrorResponse): void {
+      switch (error.error.message) {
+        case 'Cannot get board from OpenAI':
+          this.dialogConfig = OPENAI_LOADING_ERROR_DIALOG;
+          break;
+        case 'Cannot get board from Futoshiki.com':
+          this.dialogConfig = FC_API_LOADING_ERROR_DIALOG;
+          break;
+        case 'Cannot load board from file':
+          this.dialogConfig = FILE_LOADING_ERROR_DIALOG;
+          break;
+        default:
+          this.dialogConfig = UNKNOWN_ERROR_DIALOG;
+      }
+  }
+
   handleDialogConfirmation(): void {
     switch (this.dialogConfig?.type) {
       case DialogType.NEW_GAME:
@@ -347,9 +413,7 @@ export class GamePage {
       case DialogType.SHOW_SOLUTION:
         this.showSolution();
         break;
-      case DialogType.ABOUT:
-      case DialogType.UNDO_UNAVAILABLE:
-      case DialogType.GAME_WON:
+      case DialogType.INFO:
         this.closeDialog();
         break;
     }
