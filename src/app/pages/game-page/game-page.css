@@ -369,11 +369,6 @@ button:disabled {
     padding: 10px;
   }
 
-  .side-panel,
-  .game-panel {
-    border-radius: 12px;
-  }
-
   .board-section-content {
     justify-content: flex-start;
     min-height: 320px;
