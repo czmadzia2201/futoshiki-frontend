@@ -59,7 +59,7 @@
 
   </aside>
 
-  <main class="game-panel">
+  <main class="game-panel" [style.--puzzle-size]="activeGame?.board?.size ?? 4">
 
     <section class="game-section number-section" aria-labelledby="numbers-title">
       <h2 id="numbers-title" class="game-section-title">Number statistics</h2>
