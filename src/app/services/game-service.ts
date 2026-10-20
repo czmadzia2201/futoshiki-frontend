@@ -13,7 +13,7 @@ import { SolutionValidation } from '../models/solution-validation';
 })
 export class GameService {
 
-  private readonly apiUrl = 'http://localhost:8080/futoshiki';
+  private readonly apiUrl = 'http://localhost:8080/futoshiki/api';
 
   constructor(private readonly http: HttpClient) {}
 
