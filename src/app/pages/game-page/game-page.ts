@@ -30,6 +30,7 @@ import { ABOUT_DIALOG,
          FC_API_LOADING_ERROR_DIALOG,
          FILE_LOADING_ERROR_DIALOG,
          UNKNOWN_ERROR_DIALOG } from './dialog-configs';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-game-page',
@@ -44,7 +45,9 @@ export class GamePage implements OnInit {
 
   readonly boardSizes = [4, 5, 6, 7, 8, 9];
   readonly difficultyLevels = Object.values(Difficulty);
-  readonly providerStrategies = Object.values(ProviderStrategy);
+  readonly providerStrategies = environment.production
+    ? [ProviderStrategy.GENERATOR, ProviderStrategy.FUTOSHIKI_COM_API]
+    : Object.values(ProviderStrategy);
   readonly allNumbers = [1,2,3,4,5,6,7,8,9];
 
   readonly providerLabels: Record<ProviderStrategy, string> = {
