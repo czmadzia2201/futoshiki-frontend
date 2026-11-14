@@ -1,0 +1,16 @@
+
+{
+    auto_https off
+}
+
+:{$PORT:3000} {
+    encode gzip
+
+    redir /futoshiki /futoshiki/ 308
+
+    handle_path /futoshiki/* {
+        root * /app/dist/futoshiki-frontend/browser
+        try_files {path} /index.html
+        file_server
+    }
+}

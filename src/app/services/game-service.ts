@@ -7,13 +7,14 @@ import { Difficulty } from '../models/difficulty';
 import { ProviderStrategy } from '../models/provider-strategy';
 import { Solution } from '../models/solution';
 import { SolutionValidation } from '../models/solution-validation';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GameService {
 
-  private readonly apiUrl = 'http://localhost:8080/futoshiki/api';
+  private readonly apiUrl = environment.apiUrl;
 
   constructor(private readonly http: HttpClient) {}
 
