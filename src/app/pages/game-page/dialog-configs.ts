@@ -32,7 +32,7 @@ export const GAME_WON_DIALOG = infoDialog(
 );
 
 export const ABOUT_DIALOG = infoDialog(
-  'About the Game',
+  'About the game',
   [ 'Futoshiki is a logic puzzle played on a square grid. Fill each cell with the numbers from 1 to the board size so that every number appears exactly once in each row and column. This arrangement is called a Latin square.',
     'Some numbers are given at the start. Some neighboring cells are connected by inequality signs (< or >), which must be satisfied. These clues help you solve the puzzle.',
     'Choose a board size and difficulty before starting a new game. Select a number from the top panel, then click a cell to place the number on the board.',
