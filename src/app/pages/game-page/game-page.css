@@ -31,6 +31,24 @@
   padding: 18px;
 }
 
+.side-panel-heading {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.back-link {
+  color: #777;
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.back-link:hover,
+.back-link:focus-visible {
+  text-decoration: underline;
+}
+
 .game-options-section {
   display: flex;
   flex-direction: column;
