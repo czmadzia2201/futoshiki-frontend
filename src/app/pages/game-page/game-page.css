@@ -1,8 +1,12 @@
 :host {
+  --placeholder-size: 450px;
+  --border-color: #ddd;
+  --button-border-color: #bbb;
   display: block;
   min-height: 100vh;
   background: #f6f7f9;
   color: #222;
+  font-size: 14px;
 }
 
 .game-layout {
@@ -10,16 +14,16 @@
   grid-template-columns: 250px minmax(0, 1fr);
   gap: 20px;
   max-width: 1300px;
-  min-height: 100vh;
+  min-height: calc(100vh - 30px);
   margin: 0 auto;
-  padding: 18px;
+  padding: 18px 18px 12px;
   box-sizing: border-box;
 }
 
 .side-panel,
 .game-panel {
   background: #fff;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-color);
   border-radius: 14px;
   box-sizing: border-box;
 }
@@ -38,14 +42,14 @@
   gap: 4px;
 }
 
-.back-link {
+.page-link {
   color: #666;
   font-size: 14px;
   text-decoration: none;
 }
 
-.back-link:hover,
-.back-link:focus-visible {
+.page-link:hover,
+.page-link:focus-visible {
   text-decoration: underline;
 }
 
@@ -105,7 +109,7 @@ select {
   min-height: 32px;
   padding: 0 38px 0 13px;
   box-sizing: border-box;
-  border: 1px solid #cfd2d7;
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   background: #fff;
   color: #2d2d2d;
@@ -132,7 +136,7 @@ select:focus-visible {
 
 button {
   padding: 8px 12px;
-  border: 1px solid #bbb;
+  border: 1px solid var(--button-border-color);
   border-radius: 8px;
   background: #fff;
   cursor: pointer;
@@ -168,7 +172,7 @@ button:disabled {
 .game-section {
   position: relative;
   min-width: 0;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   background: #fff;
 }
@@ -218,7 +222,7 @@ button:disabled {
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  border: 1px dashed #d7d7d7;
+  border: 1px dashed var(--border-color);
   border-radius: 10px;
   background: #fcfcfc;
   color: #9a9a9a;
@@ -227,16 +231,16 @@ button:disabled {
 }
 
 .compact-placeholder {
-  width: min(100%, 480px);
+  width: min(100%, var(--placeholder-size));
   min-height: 38px;
   padding: 8px 14px;
 }
 
 .board-placeholder {
-  width: min(100%, 480px);
+  width: min(100%, var(--placeholder-size));
   aspect-ratio: 1;
   min-height: 280px;
-  max-height: 480px;
+  max-height: var(--placeholder-size);
   font-size: 18px;
   font-weight: 500;
 }
@@ -256,7 +260,7 @@ button:disabled {
   font-family: system-ui;
   text-align: center;
   overflow: hidden;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-color);
   border-radius: 6px;
 }
 
@@ -359,6 +363,14 @@ button:disabled {
 .vertical-constraint span {
   display: inline-block;
   transform: rotate(90deg) scaleY(2.5);
+}
+
+.game-footer {
+  width: min(calc(100% - 36px), 1264px);
+  margin: 0 auto;
+  padding-bottom: 8px;
+  border-top: 1px solid var(--border-color);
+  text-align: center;
 }
 
 @media (max-width: 850px) {
