@@ -11,9 +11,9 @@
   grid-template-columns: 250px minmax(0, 1fr);
   gap: 20px;
   max-width: 1300px;
-  min-height: calc(100vh - 38px);
+  min-height: calc(100vh - 30px);
   margin: 0 auto;
-  padding: 18px 18px 8px;
+  padding: 18px 18px 12px;
   box-sizing: border-box;
 }
 
@@ -364,10 +364,8 @@ button:disabled {
 
 .game-footer {
   width: min(calc(100% - 36px), 1264px);
-  height: 23px;
-  line-height: 23px;
   margin: 0 auto;
-  padding-bottom: 14px;
+  padding-bottom: 8px;
   border-top: 1px solid #ddd;
   text-align: center;
 }
