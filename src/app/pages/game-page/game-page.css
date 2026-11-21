@@ -1,8 +1,6 @@
 :host {
-  display: flex;
-  flex-direction: column;
+  display: block;
   min-height: 100vh;
-  min-height: 100dvh;
   background: #f6f7f9;
   color: #222;
 }
@@ -12,9 +10,7 @@
   grid-template-columns: 250px minmax(0, 1fr);
   gap: 20px;
   max-width: 1300px;
-  width: 100%;
-  flex: 1;
-  min-height: 0;
+  min-height: calc(100vh - 24px);
   margin: 0 auto;
   padding: 18px;
   box-sizing: border-box;
@@ -365,27 +361,16 @@ button:disabled {
   transform: rotate(90deg) scaleY(2.5);
 }
 
-
 .game-footer {
-  width: calc(100% - 36px);
-  max-width: 1264px;
-  margin: 0 auto;
-  padding: 12px 0 14px;
+  height: 23px;
+  line-height: 23px;
   border-top: 1px solid #ddd;
-  color: #666;
-  font-family: "Times New Roman", Times, serif;
-  font-size: 14px;
   text-align: center;
+  font-size: 14px;
 }
 
 .game-footer a {
-  color: inherit;
-  text-decoration: none;
-}
-
-.game-footer a:hover,
-.game-footer a:focus-visible {
-  text-decoration: underline;
+  color: #666;
 }
 
 @media (max-width: 850px) {
