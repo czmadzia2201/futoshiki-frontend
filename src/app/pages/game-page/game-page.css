@@ -1,4 +1,5 @@
 :host {
+  --placeholder-size: 450px;
   display: block;
   min-height: 100vh;
   background: #f6f7f9;
@@ -10,9 +11,9 @@
   grid-template-columns: 250px minmax(0, 1fr);
   gap: 20px;
   max-width: 1300px;
-  min-height: calc(100vh - 24px);
+  min-height: calc(100vh - 38px);
   margin: 0 auto;
-  padding: 18px;
+  padding: 18px 18px 8px;
   box-sizing: border-box;
 }
 
@@ -157,7 +158,6 @@ button:disabled {
 }
 
 .game-panel {
-  --placeholder-size: 450px;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto;
   gap: 14px;
@@ -363,8 +363,11 @@ button:disabled {
 }
 
 .game-footer {
+  width: min(calc(100% - 36px), 1264px);
   height: 23px;
   line-height: 23px;
+  margin: 0 auto;
+  padding-bottom: 14px;
   border-top: 1px solid #ddd;
   text-align: center;
 }
@@ -388,7 +391,11 @@ button:disabled {
 @media (max-width: 560px) {
   .game-layout {
     gap: 12px;
-    padding: 10px;
+    padding: 10px 10px 4px;
+  }
+
+  .game-footer {
+    width: calc(100% - 20px);
   }
 
   .board-section-content {
