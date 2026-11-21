@@ -38,14 +38,14 @@
   gap: 4px;
 }
 
-.back-link {
+.page-link {
   color: #666;
   font-size: 14px;
   text-decoration: none;
 }
 
-.back-link:hover,
-.back-link:focus-visible {
+.page-link:hover,
+.page-link:focus-visible {
   text-decoration: underline;
 }
 
@@ -366,11 +366,6 @@ button:disabled {
   line-height: 23px;
   border-top: 1px solid #ddd;
   text-align: center;
-  font-size: 14px;
-}
-
-.game-footer a {
-  color: #666;
 }
 
 @media (max-width: 850px) {
