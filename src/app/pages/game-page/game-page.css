@@ -366,11 +366,27 @@ button:disabled {
 }
 
 .game-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
   width: min(calc(100% - 36px), 1264px);
   margin: 0 auto;
   padding-bottom: 8px;
   border-top: 1px solid var(--border-color);
   text-align: center;
+}
+
+.game-footer button.page-link {
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.game-footer button.page-link:hover {
+  background: none;
 }
 
 @media (max-width: 850px) {
