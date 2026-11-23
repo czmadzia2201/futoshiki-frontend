@@ -218,6 +218,11 @@ button:disabled {
   overflow: auto;
 }
 
+/* Placeholder-only sizing: keep the game's minimum board area unchanged. */
+.board-section-content:has(.board-placeholder) {
+  min-height: 350px;
+}
+
 .section-placeholder {
   display: flex;
   align-items: center;
@@ -230,16 +235,15 @@ button:disabled {
   text-align: center;
   line-height: 1.5;
   min-width: 300px;
+  width: min(100%, var(--responsive-placeholder-size));
 }
 
 .compact-placeholder {
-  width: min(100%, var(--responsive-placeholder-size));
   min-height: 38px;
   padding: 8px 14px;
 }
 
 .board-placeholder {
-  width: min(100%, var(--responsive-placeholder-size));
   aspect-ratio: 1;
   min-height: 300px;
   font-size: 18px;
@@ -416,11 +420,6 @@ button:disabled {
     min-height: 320px;
   }
 }
-/* Placeholder-only sizing: keep the game's minimum board area unchanged. */
-.board-section-content:has(.board-placeholder) {
-  min-height: 350px;
-}
-
 /* spinner */
 .loading-overlay {
   position: fixed;
