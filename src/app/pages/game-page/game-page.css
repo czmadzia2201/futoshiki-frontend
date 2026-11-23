@@ -220,7 +220,7 @@ button:disabled {
 
 /* Placeholder-only sizing: keep the game's minimum board area unchanged. */
 .board-section-content:has(.board-placeholder) {
-  min-height: 350px;
+  min-height: 360px;
 }
 
 .section-placeholder {
@@ -394,7 +394,7 @@ button:disabled {
   background: none;
 }
 
-@media (max-width: 850px) {
+@media (max-width: 800px) {
   .game-layout {
     grid-template-columns: 1fr;
     min-height: auto;
