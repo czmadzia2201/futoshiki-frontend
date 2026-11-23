@@ -161,7 +161,7 @@ button:disabled {
 }
 
 .game-panel {
-  --responsive-placeholder-size: max(200px, min(var(--placeholder-size), calc(100dvh - 310px), calc(100vw - 400px)));
+  --responsive-placeholder-size: max(200px, min(var(--placeholder-size), calc(100dvh - 430px), calc(100vw - 400px)));
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto;
   gap: 14px;
