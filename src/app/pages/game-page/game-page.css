@@ -245,7 +245,6 @@ button:disabled {
 
 .board-placeholder {
   aspect-ratio: 1;
-  min-height: 300px;
   font-size: 18px;
   font-weight: 500;
 }
@@ -410,7 +409,6 @@ button:disabled {
   }
 
   .board-section-content {
-    min-height: 360px;
     padding: 20px;
   }
 }
