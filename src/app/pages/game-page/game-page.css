@@ -14,7 +14,7 @@
   grid-template-columns: 250px minmax(0, 1fr);
   gap: 20px;
   max-width: 1300px;
-  min-height: calc(100vh - 30px);
+  min-height: calc(100dvh - 60px);
   margin: 0 auto;
   padding: 18px 18px 12px;
   box-sizing: border-box;
