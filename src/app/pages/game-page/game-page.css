@@ -414,12 +414,6 @@ button:disabled {
     padding: 20px;
   }
 }
-
-@media (max-width: 560px) {
-  .board-section-content {
-    min-height: 320px;
-  }
-}
 /* spinner */
 .loading-overlay {
   position: fixed;
