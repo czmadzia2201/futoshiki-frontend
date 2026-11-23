@@ -161,6 +161,7 @@ button:disabled {
 }
 
 .game-panel {
+  --responsive-placeholder-size: max(400px, min(var(--placeholder-size), calc(100dvh - 290px), calc(100vw - 400px)));
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto;
   gap: 14px;
@@ -231,15 +232,14 @@ button:disabled {
 }
 
 .compact-placeholder {
-  width: min(100%, var(--placeholder-size));
+  width: min(100%, var(--responsive-placeholder-size));
   min-height: 38px;
   padding: 8px 14px;
 }
 
 .board-placeholder {
-  width: min(100%, var(--placeholder-size), calc(100dvh - 110px));
+  width: min(100%, var(--responsive-placeholder-size));
   aspect-ratio: 1;
-  min-width: 400px;
   font-size: 18px;
   font-weight: 500;
 }
@@ -395,12 +395,12 @@ button:disabled {
   }
 
   .game-panel {
+    --responsive-placeholder-size: min(var(--placeholder-size), calc(100vw - 130px), max(160px, calc(100dvh - 460px)));
     grid-template-rows: auto auto auto;
   }
 
-  .board-placeholder {
+  .game-panel:has(.board-placeholder) {
     min-width: 0;
-    width: min(100%, var(--placeholder-size), calc(100dvh - 110px), max(216px, calc(100vw - 380px)));
   }
 
   .board-section-content {
@@ -424,6 +424,11 @@ button:disabled {
     width: calc(50% - 6px);
   }
 }
+/* Placeholder-only sizing: keep the game's minimum board area unchanged. */
+.board-section-content:has(.board-placeholder) {
+  min-height: 0;
+}
+
 /* spinner */
 .loading-overlay {
   position: fixed;
