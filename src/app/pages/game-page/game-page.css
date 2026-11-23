@@ -237,10 +237,9 @@ button:disabled {
 }
 
 .board-placeholder {
-  width: min(100%, var(--placeholder-size));
+  width: min(100%, var(--placeholder-size), calc(100dvh - 110px));
   aspect-ratio: 1;
-  min-height: 280px;
-  max-height: var(--placeholder-size);
+  min-width: 400px;
   font-size: 18px;
   font-weight: 500;
 }
@@ -397,6 +396,11 @@ button:disabled {
 
   .game-panel {
     grid-template-rows: auto auto auto;
+  }
+
+  .board-placeholder {
+    min-width: 0;
+    width: min(100%, var(--placeholder-size), calc(100dvh - 110px), max(216px, calc(100vw - 380px)));
   }
 
   .board-section-content {
